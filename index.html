@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VELMETIX DIF-5 — порошковый рентгеновский дифрактометр</title>
 <script>document.documentElement.classList.add('js')</script>
+<link rel="preload" as="image" href="media/dif5-hero.webp" type="image/webp" fetchpriority="high">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 120 120%27%3E%3Crect width=%27120%27 height=%27120%27 fill=%27%23121821%27/%3E%3Cg transform=%27translate(34.2 30) scale(0.6)%27%3E%3Cpolygon fill=%27%23fff%27 points=%270,0 16,0 86,100 70,100%27/%3E%3Cpolygon fill=%27%233D7BFF%27 points=%2770,0 86,0 16,100 0,100%27/%3E%3C/g%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="VELMETIX">
@@ -137,6 +138,10 @@ p{max-width:64ch;color:var(--ink-2)}
 .stage.photo img{filter:drop-shadow(0 30px 40px rgba(18,36,72,.16))}
 .js .stage.photo img{filter:drop-shadow(0 30px 40px rgba(18,36,72,.16));opacity:0;transform:translateY(14px);transition:opacity 1.2s var(--ease),transform 1.4s var(--ease)}
 .js .stage.photo.ready img{opacity:1;transform:none}
+/* the floor shadow appears together with the instrument, never on its own */
+.js .stage.photo .unit::after{opacity:0}
+.js .stage.photo.ready .unit::after{opacity:1}
+.js .stage.photo.ready .unit:hover::after{opacity:.6}
 /* hover: the instrument lifts a little and its floor shadow tightens; the pointer tilts it slightly */
 .stage.photo .unit{perspective:1400px}
 .stage.photo picture{transform:translateY(var(--lift,0px)) rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg));transform-origin:50% 100%;transition:transform .7s var(--ease)}
