@@ -137,7 +137,13 @@ p{max-width:64ch;color:var(--ink-2)}
 .stage.photo img{filter:drop-shadow(0 30px 40px rgba(18,36,72,.16))}
 .js .stage.photo img{filter:drop-shadow(0 30px 40px rgba(18,36,72,.16));opacity:0;transform:translateY(14px);transition:opacity 1.2s var(--ease),transform 1.4s var(--ease)}
 .js .stage.photo.ready img{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){.stage.photo img{transition:none}}
+/* hover: the instrument lifts a little and its floor shadow tightens; the pointer tilts it slightly */
+.stage.photo .unit{perspective:1400px}
+.stage.photo picture{transform:translateY(var(--lift,0px)) rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg));transform-origin:50% 100%;transition:transform .7s var(--ease)}
+.stage.photo .unit::after{transition:transform .7s var(--ease),opacity .7s var(--ease)}
+.stage.photo .unit:hover{--lift:-14px}
+.stage.photo .unit:hover::after{transform:scaleX(.86);opacity:.6}
+@media(prefers-reduced-motion:reduce){.stage.photo img,.stage.photo picture,.stage.photo .unit::after{transition:none}.stage.photo .unit:hover{--lift:0px}.stage.photo .unit:hover::after{transform:none;opacity:1}}
 @media(max-width:979px){.stage.photo{height:auto;min-height:0;padding:1.5rem 0 2rem}.stage.photo .unit{height:auto;width:min(68%,340px)}}
 .ghost{position:absolute;left:50%;bottom:-3%;transform:translateX(-50%);width:min(1300px,96vw);height:auto;pointer-events:none;z-index:1}
 .kpis{position:relative;z-index:3;border-top:1px solid var(--line);background:rgba(255,255,255,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
@@ -1434,6 +1440,15 @@ document.getElementById('lead').addEventListener('submit', e => {
   if (host.classList.contains('photo')){
     const img = host.querySelector('img'), show = () => host.classList.add('ready');
     if (img.complete) show(); else { img.addEventListener('load', show); img.addEventListener('error', show); }
+    // a slight tilt toward the pointer while it is over the instrument
+    const unit = host.querySelector('.unit');
+    if (!reduced && matchMedia('(hover:hover)').matches){
+      unit.addEventListener('pointermove', e => {
+        const r = unit.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        unit.style.setProperty('--ry', (x * 6).toFixed(2) + 'deg'); unit.style.setProperty('--rx', (-y * 3).toFixed(2) + 'deg');
+      });
+      unit.addEventListener('pointerleave', () => { unit.style.removeProperty('--ry'); unit.style.removeProperty('--rx'); });
+    }
     return;
   }
   const gl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch(e){ return false; } })();
